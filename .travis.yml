@@ -1,0 +1,26 @@
+    
+    sudo: required
+
+    services:
+      - docker
+
+    before_install:
+      - docker build -t tsetsongdevops/react-test -f ./client/Dockerfile.dev ./client
+
+    script:
+      - docker run -e CI=true USERNAME/react-test npm test
+
+    after_success:
+      - docker build -t tsetsongdevops/multi-client ./client
+      - docker build -t tsetsongdevops/multi-nginx  ./nginx
+      - docker build -t tsetsongdevops/multi-server ./server
+      - docker build -t tsetsongdevops/multi-worker ./worker
+      # Log in into docker CLI
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+      # push built images and push them into docker hub
+      - docker push tsetsongdevops/multi-client
+      - docker push tsetsongdevops/multi-nginx
+      - docker push tsetsongdevops/multi-server
+      - docker push tsetsongdevops/multi-worker
+
+      
