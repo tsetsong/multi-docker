@@ -8,7 +8,7 @@
       - docker build -t tsetsongdevops/react-test -f ./client/Dockerfile.dev ./client
 
     script:
-      - docker run -e CI=true USERNAME/react-test npm test
+      - docker run -e CI=true tsetsongdevops/react-test npm test
 
     after_success:
       - docker build -t tsetsongdevops/multi-client ./client
